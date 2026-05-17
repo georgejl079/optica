@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CREACTIVO | Haute Horlogerie & Luxury Eyewear</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <style>
+        :root {
+            --lux-black: #0b0b0b;
+            --lux-dark: #151515;
+            --gold-light: #d4af37;
+            --gold-gradient: linear-gradient(135deg, #d4af37 0%, #aa7c11 100%);
+            --green-wa: #25D366;
+            --text-dark: #1f1f1f;
+            --text-muted: #8a8a8a;
+            --border-lux: #eeeeee;
+            --bg-studio: #fafafa; /* Fondo limpio estilo clínica/boutique */
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; color: var(--text-dark); background-color: #ffffff; -webkit-font-smoothing: antialiased; }
+
+        h1, h2, h3, .logo-text, .serif-font { font-family: 'Playfair Display', serif; }
+
+        /* HEADER & NAVEGACIÓN BOUTIQUE */
+        nav { 
+            padding: 22px 6%; display: flex; justify-content: space-between; align-items: center; 
+            position: sticky; top: 0; background: rgba(255, 255, 255, 0.96); backdrop-filter: blur(12px); 
+            z-index: 1000; border-bottom: 1px solid var(--border-lux); gap: 20px;
+        }
+        .logo-box { display: flex; flex-direction: column; cursor: pointer; }
+        .logo-text { font-size: 1.6rem; font-weight: 600; color: var(--lux-black); letter-spacing: 3px; text-transform: uppercase; line-height: 1; }
+        .logo-subtext { font-size: 0.55rem; text-transform: uppercase; letter-spacing: 4px; color: #aa7c11; font-weight: 600; margin-top: 4px; }
+        
+        .nav-links { display: flex; gap: 35px; list-style: none; }
+        .nav-links a { text-decoration: none; color: var(--text-muted); font-weight: 400; font-size: 0.75rem; text-transform: uppercase; cursor: pointer; padding-bottom: 4px; letter-spacing: 2px; transition: color 0.3s; position: relative; }
+        .nav-links a:hover, .nav-links a.active { color: var(--lux-black); font-weight: 600; }
+        .nav-links a.active::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 1px; background: var(--gold-gradient); }
+        
+        /* BARRA BÚSQUEDA LUJO */
+        .search-container-pc { flex: 1; max-width: 280px; position: relative; }
+        .search-container-pc input { width: 100%; padding: 10px 16px 10px 38px; border: 1px solid #e8e8e8; border-radius: 0; font-family: inherit; font-size: 0.8rem; background-color: var(--bg-studio); letter-spacing: 0.5px; transition: all 0.3s; }
+        .search-container-pc input:focus { border-color: var(--gold-light); background-color: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.02); }
+        .search-container-pc i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 0.85rem; }
+
+        .mobile-search-bar-container { display: none; padding: 12px 5%; background-color: #fff; border-bottom: 1px solid var(--border-lux); position: relative; }
+        .mobile-search-bar-container input { width: 100%; padding: 12px 16px 12px 42px; border: 1px solid #e8e8e8; border-radius: 0; font-family: inherit; font-size: 0.85rem; background-color: var(--bg-studio); }
+        .mobile-search-bar-container i { position: absolute; left: 26px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+
+        .nav-right-actions { display: flex; align-items: center; gap: 20px; }
+        .cart-icon-wrapper { position: relative; cursor: pointer; font-size: 1.2rem; color: var(--lux-black); transition: transform 0.2s; }
+        .cart-icon-wrapper:hover { transform: scale(1.05); }
+        .badge { position: absolute; top: -6px; right: -9px; background: var(--gold-gradient); color: white; font-size: 0.55rem; padding: 2px 6px; border-radius: 10px; font-weight: 600; font-family: 'Plus Jakarta Sans'; }
+
+        .hamburger-menu { display: none; font-size: 1.25rem; color: var(--lux-black); cursor: pointer; }
+
+        /* TABS INFERIORES MÓVIL */
+        .mobile-tab-bar { position: fixed; bottom: 0; left: 0; right: 0; height: 65px; background: #ffffff; border-top: 1px solid var(--border-lux); display: none; justify-content: space-around; align-items: center; z-index: 1010; box-shadow: 0 -4px 15px rgba(0,0,0,0.03); }
+        .tab-item { display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--text-muted); text-decoration: none; font-size: 0.65rem; font-weight: 500; text-transform: uppercase; cursor: pointer; width: 100%; height: 100%; gap: 4px; letter-spacing: 1px; }
+        .tab-item.active { color: var(--gold-light); font-weight: 600; }
+        .tab-item i { font-size: 1.1rem; }
+
+        /* MENÚ DESPLEGABLE MÓVIL */
+        .mobile-drawer { position: fixed; top: 0; left: -100%; width: 100%; height: 100vh; z-index: 3000; display: flex; transition: left 0.35s cubic-bezier(0.4, 0, 0.2, 1); }
+        .mobile-drawer.active { left: 0; }
+        .drawer-overlay { position: absolute; inset: 0; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(3px); }
+        .drawer-content { position: relative; width: 80%; max-width: 300px; height: 100%; background: #ffffff; display: flex; flex-direction: column; z-index: 10; box-shadow: 5px 0 25px rgba(0,0,0,0.1); }
+        .drawer-header { padding: 25px 22px; border-bottom: 1px solid var(--border-lux); display: flex; justify-content: space-between; align-items: center; }
+        .drawer-header h3 { font-size: 1.1rem; font-weight: 500; color: var(--lux-black); letter-spacing: 2px; text-transform: uppercase; }
+        .drawer-header .close-btn { font-size: 1.2rem; color: var(--text-muted); cursor: pointer; }
+        .drawer-menu { flex: 1; overflow-y: auto; list-style: none; padding: 15px 0; }
+        .drawer-menu li { padding: 16px 24px; font-size: 0.75rem; font-weight: 500; text-transform: uppercase; color: var(--text-dark); border-bottom: 1px solid #fafafa; cursor: pointer; display: flex; justify-content: space-between; align-items: center; letter-spacing: 1.5px; }
+        .drawer-menu li.active { color: var(--gold-light); background: var(--bg-studio); font-weight: 600; }
+
+        /* SECCIONES CONFIG */
+        .page-section { display: none; }
+        .page-section.active { display: block; }
+
+        /* HERO BANNERS CINEMÁTICOS */
+        .hero { 
+            height: 40vh; 
+            background: linear-gradient(rgba(11, 11, 11, 0.2), rgba(11, 11, 11, 0.65)), 
+                        url('https://images.unsplash.com/photo-1511556532299-8f662fc26c06?q=80&w=1600') center/cover;
+            display: flex; align-items: center; justify-content: center; color: white; text-align: center; padding: 25px;
+        }
+        .hero h1 { font-size: 3rem; font-weight: 400; letter-spacing: 3px; }
+        .hero p { font-size: 0.75rem; font-family: 'Plus Jakarta Sans'; text-transform: uppercase; letter-spacing: 5px; margin-top: 12px; color: var(--gold-light); font-weight: 500; }
+
+        .hero-editions {
+            background: linear-gradient(rgba(11, 11, 11, 0.3), rgba(11, 11, 11, 0.75)), 
+                        url('https://images.unsplash.com/photo-1508296695146-257a814070b4?q=80&w=1600') center/cover;
+        }
+
+        /* TÍTULOS DE SECCIÓN */
+        .section-container { padding: 70px 6% 25px; text-align: center; }
+        .section-tag { font-size: 0.65rem; letter-spacing: 5px; color: #aa7c11; text-transform: uppercase; font-weight: 600; margin-bottom: 10px; display: block; }
+        .section-title { font-size: 2.2rem; font-weight: 400; color: var(--lux-black); letter-spacing: 1px; position: relative; display: inline-block; padding-bottom: 16px; }
+        .section-title::after { content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 40px; height: 1px; background: var(--gold-gradient); }
+
+        /* CUADRÍCULA DE PRODUCTOS (PREMIUM GRID) */
+        .premium-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; padding: 20px 6% 70px; }
+        .premium-card { background: #fff; display: flex; flex-direction: column; justify-content: space-between; position: relative; }
+        
+        .premium-img-box { 
+            aspect-ratio: 16/11; background: var(--bg-studio); display: flex; align-items: center; justify-content: center; 
+            padding: 30px; position: relative; overflow: hidden; border: 1px solid #f6f6f6; cursor: pointer;
+        }
+        /* Efecto destello de cristal refinado */
+        .premium-img-box::before {
+            content: ''; position: absolute; top: 0; left: -150%; width: 50%; height: 100%;
+            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%);
+            transform: skewX(-25deg); transition: 0.75s;
+        }
+        .premium-card:hover .premium-img-box::before { left: 150%; }
+        .premium-img-box img { max-width: 95%; max-height: 95%; object-fit: contain; transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1); }
+        .premium-card:hover .premium-img-box img { transform: scale(1.05); }
+        
+        .sku-tag { position: absolute; top: 14px; right: 14px; color: #a2a2a2; padding: 2px 5px; font-size: 0.55rem; letter-spacing: 0.5px; font-weight: 500; }
+        .card-badge { position: absolute; top: 14px; left: 14px; background: var(--lux-black); color: white; font-size: 0.55rem; font-weight: 400; padding: 4px 10px; text-transform: uppercase; letter-spacing: 1.5px; }
+        
+        .premium-info { padding: 18px 0 0; text-align: center; }
+        .premium-brand-tag { font-size: 0.65rem; font-weight: 600; color: #aa7c11; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 6px; display: block; }
+        .premium-info h4 { font-family: 'Playfair Display', serif; font-size: 1.35rem; font-weight: 400; color: var(--lux-black); line-height: 1.3; margin-bottom: 8px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; height: 48px; cursor: pointer; transition: color 0.3s; }
+        .premium-info h4:hover { color: var(--gold-light); }
+        .premium-prices { display: flex; justify-content: center; align-items: center; margin-bottom: 12px; }
+        .p-current { font-size: 1rem; font-weight: 500; color: var(--lux-black); letter-spacing: 0.5px; }
+        
+        .stock-tag { font-size: 0.6rem; font-weight: 600; padding: 2px 6px; text-transform: uppercase; letter-spacing: 1.5px; display: inline-block; margin-bottom: 15px; }
+        .stock-high { color: #2e7d32; }
+        .stock-low { color: #b71c1c; }
+        .stock-none { color: #757575; }
+
+        /* BOTÓN LUXURY INTERACTIVO */
+        .btn-add-lux { 
+            position: relative; background: var(--lux-black); color: white; width: 100%; padding: 14px; 
+            border: none; font-weight: 500; font-size: 0.7rem; text-transform: uppercase; cursor: pointer; 
+            transition: all 0.3s ease; letter-spacing: 2px; overflow: hidden; z-index: 1;
+        }
+        .btn-add-lux::after {
+            content: ''; position: absolute; transition: transform 0.3s ease; transform-origin: top left;
+            top: 0; left: 0; width: 100%; height: 100%; background: var(--gold-gradient); transform: scaleX(0); z-index: -1;
+        }
+        .btn-add-lux:hover::after { transform: scaleX(1); }
+        .btn-disabled { background: #e8e8e8 !important; color: #9a9a9a !important; cursor: not-allowed !important; }
+        .btn-disabled::after { display: none !important; }
+
+        /* CONTENEDOR DOS COLUMNAS - CATÁLOGO */
+        .catalog-container { display: flex; padding: 50px 6%; gap: 60px; }
+        .sidebar-left { width: 22%; flex-shrink: 0; border-right: 1px solid var(--border-lux); padding-right: 35px; }
+        .widget-title { font-size: 1.1rem; font-weight: 400; text-transform: uppercase; margin-bottom: 18px; color: var(--lux-black); margin-top: 40px; letter-spacing: 2px; padding-bottom: 6px; border-bottom: 1px solid var(--lux-black); }
+        .widget-title:first-child { margin-top: 0; }
+        
+        .cat-list { list-style: none; }
+        .cat-list li { padding: 12px 0; border-bottom: 1px solid #fafafa; font-size: 0.75rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase; transition: color 0.2s; }
+        .cat-list li:hover, .cat-list li.active { color: var(--lux-black); font-weight: 600; }
+        .cat-list li.active { color: #aa7c11; }
+        
+        .brand-logos { display: grid; grid-template-columns: repeat(1, 1fr); gap: 10px; margin-top: 15px; }
+        .brand-box { border: 1px solid #ebeeef; padding: 11px; text-align: center; font-size: 0.7rem; color: var(--text-muted); cursor: pointer; text-transform: uppercase; letter-spacing: 2px; transition: all 0.25s; }
+        .brand-box.active, .brand-box:hover { border-color: var(--lux-black); color: var(--lux-black); background: var(--bg-studio); }
+        .brand-box.active { border-color: #aa7c11; color: #aa7c11; font-weight: 600; }
+        
+        .catalog-right { width: 78%; }
+        .catalog-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 35px; padding-bottom: 16px; border-bottom: 1px solid var(--border-lux); }
+        .catalog-products-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 35px; }
+
+        /* VISTA INTERNA DEL PRODUCTO */
+        .product-detail-view { display: flex; padding: 70px 6%; gap: 80px; align-items: flex-start; }
+        .detail-left { width: 45%; text-align: center; border: 1px solid var(--border-lux); padding: 50px; display: flex; align-items: center; justify-content: center; background: var(--bg-studio); min-height: 420px; }
+        .detail-left img { max-width: 100%; max-height: 340px; object-fit: contain; }
+        
+        .detail-right { width: 55%; }
+        .brand-inline-box { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+        .brand-badge-tech { font-size: 0.65rem; font-weight: 600; text-transform: uppercase; color: var(--lux-black); background: #fff; padding: 6px 16px; border: 1px solid var(--lux-black); letter-spacing: 2.5px; }
+        
+        .detail-title { font-size: 2.6rem; font-weight: 400; color: var(--lux-black); margin-bottom: 18px; line-height: 1.2; }
+        .detail-desc-short { font-size: 0.95rem; color: #444; line-height: 1.8; margin-bottom: 30px; font-weight: 300; }
+        
+        /* SELECTOR CANTIDAD INTERNO */
+        .qty-box { display: flex; align-items: center; background: #fff; border: 1px solid var(--lux-black); max-width: 120px; overflow: hidden; margin-bottom: 18px; height: 42px; }
+        .qty-btn { flex: 1; padding: 10px; border: none; background: transparent; cursor: pointer; font-weight: 400; color: var(--lux-black); font-size: 1rem; }
+        .qty-btn:hover { background: var(--bg-studio); }
+        .qty-val { width: 40px; text-align: center; border: none; background: transparent; font-weight: 600; color: var(--lux-black); font-family: 'Plus Jakarta Sans'; font-size: 0.9rem; }
+
+        .actions-block { display: flex; flex-direction: column; gap: 15px; margin-top: 30px; }
+        .btn-pdf { background: var(--lux-black); color: white; padding: 15px 26px; border: none; font-weight: 500; display: inline-flex; align-items: center; gap: 12px; cursor: pointer; font-size: 0.7rem; width: fit-content; text-transform: uppercase; letter-spacing: 2px; transition: background-color 0.25s; }
+        .btn-pdf:hover { background: var(--gold-gradient); }
+        
+        .btn-wa-consult { background: var(--lux-black); color: white; border: 1px solid var(--lux-black); padding: 16px 28px; display: flex; align-items: center; justify-content: center; gap: 14px; cursor: pointer; width: fit-content; transition: all 0.3s; position: relative; }
+        .btn-wa-consult:hover { background: #128C7E; border-color: #128C7E; }
+        .btn-wa-consult i { color: var(--green-wa); font-size: 1.3rem; }
+
+        /* TABS DE ESPECIFICACIONES TÉCNICAS */
+        .tabs-wrapper { margin-top: 55px; border-top: 1px solid var(--border-lux); }
+        .tabs-header { display: flex; gap: 45px; border-bottom: 1px solid var(--border-lux); }
+        .tab-btn { background: none; border: none; padding: 16px 0; font-size: 0.75rem; font-weight: 500; text-transform: uppercase; color: var(--text-muted); cursor: pointer; position: relative; letter-spacing: 2px; }
+        .tab-btn.active { color: var(--lux-black); font-weight: 600; }
+        .tab-btn.active::after { content: ''; position: absolute; bottom: -1px; left: 0; width: 100%; height: 1px; background: #aa7c11; }
+        
+        .tab-content { padding: 25px 0; display: none; }
+        .tab-content.active { display: block; }
+        .tab-content ul { padding-left: 18px; color: #333; font-size: 0.9rem; line-height: 1.9; font-weight: 300; }
+        .tab-content ul li { margin-bottom: 12px; }
+        
+        .tech-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        .tech-table tr { border-bottom: 1px solid #fcfcfc; }
+        .tech-table tr:nth-child(even) { background: var(--bg-studio); }
+        .tech-table td { padding: 14px 18px; }
+        .tech-table td.label-td { font-weight: 500; color: var(--lux-black); width: 38%; text-transform: uppercase; font-size: 0.7rem; letter-spacing: 1.5px; }
+        .tech-table td.value-td { color: #444; font-weight: 300; }
+
+        /* CARRITO LATERAL (SIDEBAR DRAWER) */
+        .sidebar-cart { position: fixed; top: 0; right: -100%; width: 100%; max-width: 400px; height: 100vh; background: white; z-index: 4000; transition: 0.35s cubic-bezier(0.4, 0, 0.2, 1); padding: 40px; display: flex; flex-direction: column; border-left: 1px solid var(--border-lux); box-shadow: -5px 0 25px rgba(0,0,0,0.06); }
+        .sidebar-cart.active { right: 0; }
+        .cart-item { display: flex; gap: 18px; margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid #f6f6f6; align-items: center; }
+        .cart-item img { width: 75px; height: 50px; object-fit: contain; background: var(--bg-studio); padding: 6px; border: 1px solid #fdfdfd; }
+
+        /* BOTÓN WHATSAPP ASISTENCIA PERSONALIZADA */
+        .whatsapp-flotante-container { position: fixed; bottom: 85px; right: 25px; display: flex; align-items: center; gap: 12px; z-index: 2000; pointer-events: none; }
+        .whatsapp-tooltip { background: #ffffff; color: var(--lux-black); font-size: 0.75rem; font-weight: 400; padding: 11px 18px; border: 1px solid var(--border-lux); white-space: nowrap; pointer-events: auto; letter-spacing: 0.5px; box-shadow: 0 4px 15px rgba(0,0,0,0.04); }
+        .btn-whatsapp-flotante { background: var(--lux-black); color: #ffffff; width: 54px; height: 54px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.35rem; box-shadow: 0 6px 20px rgba(0,0,0,0.1); cursor: pointer; text-decoration: none; pointer-events: auto; transition: all 0.3s; }
+        .btn-whatsapp-flotante:hover { background: var(--gold-gradient); transform: translateY(-2px); }
+
+        /* FOOTER CORPORATIVO */
+        .main-footer { background-color: #060606; color: #b5b5b5; padding: 80px 6% 45px; margin-top: 80px; border-top: 1px solid var(--border-lux); }
+        .footer-grid { display: grid; grid-template-columns: 1.2fr 0.8fr 1fr; gap: 60px; border-bottom: 1px solid rgba(255, 255, 255, 0.04); padding-bottom: 60px; }
+        .footer-col h4 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 2.5px; margin-bottom: 24px; color: #ffffff; }
+        .footer-col p { font-size: 0.8rem; line-height: 1.9; color: #7f7f7f; font-weight: 300; }
+        .footer-links { list-style: none; }
+        .footer-links li { margin-bottom: 14px; }
+        .footer-links a { color: #7f7f7f; text-decoration: none; font-size: 0.8rem; transition: color 0.2s; cursor: pointer; font-weight: 300; letter-spacing: 0.5px; }
+        .footer-links a:hover { color: #ffffff; }
+        .footer-contact-item { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; font-size: 0.8rem; color: #7f7f7f; font-weight: 300; }
+        .footer-contact-item i { color: var(--gold-light); font-size: 0.9rem; }
+        
+        .footer-bottom { padding-top: 35px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
+        .footer-bottom p { font-size: 0.75rem; color: #444444; letter-spacing: 0.5px; }
+        .footer-socials { display: flex; gap: 22px; }
+        .footer-socials a { color: #444444; font-size: 1rem; transition: color 0.2s; }
+        .footer-socials a:hover { color: #ffffff; }
+
+        /* RESPONSIVE DESIGN (MOBILE FIRST OPTIMIZED) */
+        @media (max-width: 1024px) {
+            .premium-grid { grid-template-columns: repeat(2, 1fr); gap: 30px; }
+            .sidebar-left { display: none; }
+            .catalog-right { width: 100%; }
+            .catalog-products-grid { grid-template-columns: repeat(2, 1fr); }
+            .footer-grid { gap: 40px; }
+        }
+        @media (max-width: 768px) {
+            nav { padding: 16px 5%; }
+            .logo-text { font-size: 1.4rem; }
+            .search-container-pc { display: none; }
+            .mobile-search-bar-container { display: block; }
+            .premium-grid, .catalog-products-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; padding: 15px 4% 35px; }
+            .product-detail-view { flex-direction: column; gap: 45px; padding-top: 30px; }
+            .detail-left, .detail-right { width: 100%; }
+            .detail-left { padding: 30px; min-height: 300px; }
+            .detail-title { font-size: 2.1rem; }
+            .hamburger-menu { display: block; }
+            .mobile-tab-bar { display: flex; }
+            .footer-grid { grid-template-columns: 1fr; gap: 40px; }
+            .main-footer { padding-bottom: 100px; } 
+            .hero h1 { font-size: 2.2rem; }
+        }
+        @media (max-width: 480px) {
+            .premium-grid, .catalog-products-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 12px !important; padding: 10px 3% 30px !important; }
+            .premium-img-box { padding: 15px !important; }
+            .premium-brand-tag { font-size: 0.55rem; letter-spacing: 2px; }
+            .premium-info h4 { font-size: 1.1rem; height: 42px; margin-bottom: 4px; }
+            .p-current { font-size: 0.85rem; }
+            .stock-tag { font-size: 0.55rem; margin-bottom: 10px; }
+            .btn-add-lux { padding: 12px 4px; font-size: 0.62rem; letter-spacing: 1px; }
+            .nav-links { display: none; }
+            .whatsapp-tooltip { display: none; }
+            .footer-bottom { flex-direction: column; text-align: center; gap: 15px; }
+            .sidebar-cart { padding: 25px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="mobile-drawer" class="mobile-drawer">
+        <div class="drawer-overlay" onclick="toggleDrawer(false)"></div>
+        <div class="drawer-content">
+            <div class="drawer-header">
+                <h3>Colecciones Luxe</h3>
+                <i class="fas fa-times close-btn" onclick="toggleDrawer(false)"></i>
+            </div>
+            <ul class="drawer-menu">
+                <li class="active" id="m-cat-all" onclick="filterCategoryMobile('all')">Colección Completa <span>&gt;</span></li>
+                <li id="m-cat-Optical" onclick="filterCategoryMobile('Optical')">Armazones Clínicos <span>&gt;</span></li>
+                <li id="m-cat-Sun" onclick="filterCategoryMobile('Sun')">Gafas de Sol Exclusive <span>&gt;</span></li>
+            </ul>
+        </div>
+    </div>
+
+    <nav>
+        <div style="display:flex; align-items:center; gap:18px;">
+            <i class="fas fa-bars hamburger-menu" onclick="toggleDrawer(true)"></i>
+            <div class="logo-box" onclick="navigateTo('home')">
+                <span class="logo-text">CREACTIVO</span>
+                <span class="logo-subtext">Haute Eyewear</span>
+            </div>
+        </div>
+        
+        <ul class="nav-links">
+            <li><a id="link-home" class="active" onclick="navigateTo('home')">Boutique</a></li>
+            <li><a id="link-new" onclick="navigateTo('new')">Ediciones Oro</a></li>
+            <li><a id="link-catalog" onclick="navigateTo('catalog')">Galería</a></li>
+        </ul>
+
+        <div class="search-container-pc">
+            <i class="fas fa-search"></i>
+            <input type="text" id="search-input-pc" placeholder="Buscar montura, titanio o calibre..." oninput="handleSearch(this.value)">
+        </div>
+        
+        <div class="nav-right-actions">
+            <div class="cart-icon-wrapper" onclick="toggleCart(true)">
+                <i class="fas fa-shopping-bag"></i>
+                <span class="badge" id="cart-count">0</span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="mobile-search-bar-container">
+        <i class="fas fa-search"></i>
+        <input type="text" id="search-input-mobile" placeholder="Buscar armazón o marca..." oninput="handleSearch(this.value)">
+    </div>
+
+    <div class="mobile-tab-bar">
+        <div id="tab-home" class="tab-item active" onclick="navigateTo('home')">
+            <i class="fas fa-gem"></i>
+            <span>Estudio</span>
+        </div>
+        <div id="tab-catalog" class="tab-item" onclick="navigateTo('catalog')">
+            <i class="fas fa-glasses"></i>
+            <span>Modelos</span>
+        </div>
+        <div id="tab-cart" class="tab-item" onclick="toggleCart(true)">
+            <i class="fas fa-shopping-bag"></i>
+            <span>Selección</span>
+        </div>
+    </div>
+
+    <div id="view-home" class="page-section active">
+        <header class="hero">
+            <div>
+                <h1>Atelier de Haute Lunetterie</h1>
+                <p>Salud Visual Sastres y Curaduría Internacional de Diseñador</p>
+            </div>
+        </header>
+
+        <div class="section-container">
+            <span class="section-tag">Precisión Cristalina & Anatomía</span>
+            <h2 class="section-title">Armazones Ópticos Haute</h2>
+        </div>
+        <section class="premium-grid" id="home-tech-grid"></section>
+
+        <div class="section-container">
+            <span class="section-tag">Filtros de Vanguardia & Pasarela</span>
+            <h2 class="section-title">Gafas de Sol Exclusive</h2>
+        </div>
+        <section class="premium-grid" id="home-adventure-grid"></section>
+    </div>
+
+    <div id="view-new" class="page-section">
+        <header class="hero hero-editions">
+            <div>
+                <h1>Ediciones Oro Limitadas</h1>
+                <p>Materiales Nobles, Cristales Inteligentes e Importación Exclusiva</p>
+            </div>
+        </header>
+        
+        <div class="section-container">
+            <span class="section-tag">Vitrina de Joyería Visual</span>
+            <h2 class="section-title">Nuevos Ingresos Globales</h2>
+        </div>
+        <section class="premium-grid" id="new-products-grid"></section>
+    </div>
+
+    <div id="view-catalog" class="page-section">
+        <div class="catalog-container">
+            <aside class="sidebar-left">
+                <h3 class="widget-title">Especialidad</h3>
+                <ul class="cat-list">
+                    <li class="active" id="cat-all" onclick="filterCategory('all')">Ver Todo Atelier</li>
+                    <li id="cat-Optical" onclick="filterCategory('Optical')">Armazones Clínicos</li>
+                    <li id="cat-Sun" onclick="filterCategory('Sun')">Gafas de Sol Premium</li>
+                </ul>
+                <h3 class="widget-title">Casas de Diseño</h3>
+                <div class="brand-logos">
+                    <div class="brand-box" id="brand-TomFord" onclick="filterBrand('TomFord')">Tom Ford</div>
+                    <div class="brand-box" id="brand-RayBan" onclick="filterBrand('RayBan')">Ray-Ban</div>
+                    <div class="brand-box" id="brand-Gucci" onclick="filterBrand('Gucci')">Gucci</div>
+                </div>
+            </aside>
+            <main class="catalog-right">
+                <div class="catalog-header">
+                    <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px;" id="catalog-results-title">Galería Completa Eyewear</div>
+                </div>
+                <div class="catalog-products-grid" id="catalog-products-grid"></div>
+            </main>
+        </div>
+    </div>
+
+    <div id="view-detail" class="page-section">
+        <div class="product-detail-view">
+            <div class="detail-left">
+                <img id="det-img" src="">
+            </div>
+            
+            <div class="detail-right">
+                <div class="brand-inline-box">
+                    <div style="font-size:0.7rem; color:#8a8a8a; text-transform:uppercase; letter-spacing:1px;" id="det-crumbs"></div>
+                    <span class="brand-badge-tech" id="det-brand-badge"></span>
+                </div>
+                
+                <h1 class="detail-title" id="det-name"></h1>
+                <p class="detail-desc-short" id="det-desc-top"></p>
+
+                <div id="detail-action-box" style="margin-bottom:25px;"></div>
+
+                <div class="actions-block">
+                    <button class="btn-pdf" onclick="alert('Iniciando simulación óptica de grosor e índice de refracción (1.56, 1.61, 1.67)...')">
+                        <i class="fas fa-layer-group"></i> Calcular Índice de Cristal Idóneo
+                    </button>
+
+                    <button class="btn-wa-consult" id="det-wa-btn">
+                        <i class="fab fa-whatsapp"></i>
+                        <div style="text-align:left;">
+                            <span style="font-size:0.6rem; display:block; font-weight:400; opacity:0.8; text-transform: uppercase; letter-spacing: 1px;">Enviar Receta al Optometrista</span>
+                            <span style="font-weight: 500; font-size: 0.9rem; letter-spacing: 0.5px;">Consultar Diagnóstico y Montaje</span>
+                        </div>
+                    </button>
+                </div>
+
+                <div class="tabs-wrapper">
+                    <div class="tabs-header">
+                        <button class="tab-btn active" id="btn-tab-desc" onclick="switchTab('tab-desc')">Estética & Anatomía</button>
+                        <button class="tab-btn" id="btn-tab-specs" onclick="switchTab('tab-specs')">Ficha de Laboratorio</button>
+                    </div>
+                    
+                    <div id="tab-desc" class="tab-content active">
+                        <ul id="det-bullet-list"></ul>
+                    </div>
+                    
+                    <div id="tab-specs" class="tab-content">
+                        <table class="tech-table" id="det-tech-table"></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="main-footer">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <div class="logo-box" style="margin-bottom:20px;">
+                    <span class="logo-text" style="color:#ffffff; letter-spacing: 4px;">CREACTIVO</span>
+                    <span class="logo-subtext" style="color:var(--gold-light);">Luxury Laboratory</span>
+                </div>
+                <p>Importadores premium autorizados de armazones de alta costura, aleaciones de titanio japonés y laboratorios digitales certificados. Redefiniendo su mirada bajo los estándares más selectos de la moda y la salud visual.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Líneas de Atelier</h4>
+                <ul class="footer-links">
+                    <li><a onclick="navigateTo('home')">Armazones Clínicos</a></li>
+                    <li><a onclick="navigateTo('new')">Gafas de Sol Luxe</a></li>
+                    <li><a onclick="navigateTo('catalog')">Colección Global</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Gabinete Central</h4>
+                <div class="footer-contact-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>Yacuiba, Bolivia</span>
+                </div>
+                <div class="footer-contact-item">
+                    <i class="fas fa-phone-alt"></i>
+                    <span>+591 75179990</span>
+                </div>
+                <div class="footer-contact-item">
+                    <i class="fas fa-envelope"></i>
+                    <span>atelier@creactivo.online</span>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 CREACTIVO Atelier Laboratory. Especialistas en Óptica de Alta Gama.</p>
+            <div class="footer-socials">
+                <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="https://wa.me/59175179990" target="_blank" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <div class="sidebar-cart" id="sidebar-cart">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:35px; height: 40px;">
+            <h3 style="font-weight: 500; text-transform: uppercase; font-size: 1.05rem; letter-spacing: 2px;">Mi Selección</h3>
+            <i class="fas fa-times" onclick="toggleCart(false)" style="cursor:pointer; color: var(--text-muted); font-size: 1.1rem;"></i>
+        </div>
+        <div id="cart-items-container" style="flex:1; overflow-y:auto;"></div>
+        <div style="padding:22px 0 0; border-top:1px solid var(--border-lux)">
+            <div style="display:flex; justify-content:space-between; margin-bottom:24px; color:var(--lux-black);">
+                <span class="serif-font" style="font-size:1.35rem; font-weight:400;">Base Monturas:</span>
+                <span id="totalLabel" style="font-weight:600; font-size:1.15rem;">Bs. 0.00</span>
+            </div>
+            <button class="btn-add-lux" style="padding:15px; font-size:0.75rem;" onclick="sendWhatsAppOrder()">
+                <i class="fab fa-whatsapp" style="margin-right: 6px;"></i> RESERVAR Y ENVIAR RECETA
+            </button>
+        </div>
+    </div>
+
+    <div class="whatsapp-flotante-container">
+        <div class="whatsapp-tooltip">¿Busca un calibre o marca de diseñador específica?</div>
+        <a href="https://wa.me/59175179990?text=Hola%20Creactivo%20Atelier%2C%20solicito%20asesor%C3%ADa%20exclusiva%20sobre%20el%20cat%C3%A1logo%20de%20monturas%20premium." 
+           target="_blank" 
+           class="btn-whatsapp-flotante">
+            <i class="fab fa-whatsapp"></i>
+        </a>
+    </div>
+
+    <script>
+        // BASE DE DATOS ADAPTADA A ELEMENTOS ÓPTICOS DE LUJO
+        const products = [
+            { 
+                id: 1, section: 'tech', brand: 'TomFord', category: 'Optical', sku: 'TF-5634-B', stock: 4, price: 1450.00, badge: 'Edición Oro',
+                name: 'Tom Ford Architectural Acetate Block', 
+                desc: 'Estructura robusta esculpida en acetato italiano pulido a mano. Cuenta con la icónica bisagra en "T" metálica en oro cepillado integrada sutilmente en las varillas.', 
+                bullets: [
+                    'Ergonomía Facial Sastre: Almohadillas integradas esculpidas milimétricamente para un reparto equilibrado del peso.',
+                    'Acetato Orgánico: Bloques antialérgicos seleccionados de alta densidad con acabado brillante eterno.',
+                    'Eje Reforzado: Varillas con alma de acero templado maleable para un ajuste anatómico perfecto en óptica.'
+                ],
+                specs: { 'Diseñador': 'Tom Ford Architecture (Milán)', 'Materialería': 'Acetato de Celulosa Macizo', 'Calibre del Cristal': '53 mm', 'Puente Nasal': '18 mm', 'Longitud de Varilla': '145 mm', 'Cristal Sugerido': 'Monofocal Alto Índice / Progresivo HD Premium' },
+                img: 'https://images.unsplash.com/photo-1511556532299-8f662fc26c06?q=80&w=600' 
+            },
+            { 
+                id: 2, section: 'tech', brand: 'RayBan', category: 'Optical', sku: 'RB-CLUB-L', stock: 6, price: 890.00, badge: 'Heritage', 
+                name: 'Ray-Ban Clubmaster Optics Classic Gold', 
+                desc: 'La fusión ideal entre la intelectualidad retro y el modernismo minimalista. Combina cejas de acetato negro ébano con sutiles detalles en metal dorado pulido.', 
+                bullets: [
+                    'Soporte Híbrido: Estructura ligera que disipa los puntos de presión en el tabique.',
+                    'Lunas de Demostración: Incluye cristales base grabados listos para tallado de receta definitiva.',
+                    'Plaquetas Basculantes: Almohadillas nasales de silicona médica hipoalergénica autoajustables.'
+                ],
+                specs: { 'Diseñador': 'Ray-Ban Legacy (Luxottica)', 'Materialería': 'Aleación Monel & Acetato Noble', 'Calibre del Cristal': '51 mm', 'Puente Nasal': '21 mm', 'Longitud de Varilla': '145 mm', 'Cristal Sugerido': 'Filtro Blue Defense / Fotocromático Inteligente' },
+                img: 'https://images.unsplash.com/photo-1591076482161-42ce6da69f67?q=80&w=600' 
+            },
+            { 
+                id: 3, section: 'adventure', brand: 'Gucci', category: 'Sun', sku: 'GG-OVERS-90', stock: 2, price: 1980.00, badge: 'Pasarela', 
+                name: 'Gucci Oversized Sculpted Square', 
+                desc: 'Gafas de sol de proporciones arquitectónicas y silueta vanguardista. Ofrecen una suntuosa combinación de alta protección ultravioleta y un perfil estético magnético.', 
+                bullets: [
+                    'Protección Certificada: Bloqueo absoluto UV400 Categoría 3 contra radiación e infrarrojos.',
+                    'Orfebrería en Varillas: Logotipo de la doble G entrelazada chapado en oro, incrustado artesanalmente.',
+                    'Fijación Antideslizante: Curvatura terminal orgánica diseñada para una estabilidad perfecta al andar.'
+                ],
+                specs: { 'Diseñador': 'Gucci Maison (Florencia)', 'Materialería': 'Inyección de Polímeros Nobles Macizos', 'Calibre del Cristal': '56 mm', 'Puente Nasal': '19 mm', 'Longitud de Varilla': '140 mm', 'Filtro Solar Incorporado': 'Categoría 3 Luxe - Degradado Sutil' },
+                img: 'https://images.unsplash.com/photo-1508296695146-257a814070b4?q=80&w=600' 
+            }
+        ];
+
+        let cart = JSON.parse(localStorage.getItem('creactivo_luxury_cart')) || [];
+        let currentCategory = 'all';
+        let currentBrand = 'all';
+        let searchQuery = '';
+
+        window.addEventListener('popstate', function () {
+            document.getElementById('mobile-drawer').classList.remove('active');
+            document.getElementById('sidebar-cart').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        });
+
+        function navigateTo(viewId) {
+            document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+            document.querySelectorAll('.mobile-tab-bar .tab-item').forEach(t => t.classList.remove('active'));
+            
+            document.getElementById(`view-${viewId}`).classList.add('active');
+            
+            const link = document.getElementById(`link-${viewId}`);
+            if(link) link.classList.add('active');
+
+            const tab = document.getElementById(`tab-${viewId}`);
+            if(tab) tab.classList.add('active');
+
+            if (searchQuery === '') {
+                document.getElementById('search-input-pc').value = '';
+                document.getElementById('search-input-mobile').value = '';
+            }
+            window.scrollTo(0,0);
+        }
+
+        function toggleDrawer(open) {
+            const drawer = document.getElementById('mobile-drawer');
+            if (open) {
+                drawer.classList.add('active');
+                document.body.style.overflow = 'hidden';
+                history.pushState({ drawerOpen: true }, "");
+            } else {
+                drawer.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        function toggleCart(open) {
+            const cartMenu = document.getElementById('sidebar-cart');
+            if (open) {
+                cartMenu.classList.add('active');
+                document.body.style.overflow = 'hidden';
+                history.pushState({ cartOpen: true }, "");
+            } else {
+                cartMenu.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        function handleSearch(val) {
+            searchQuery = val.trim().toLowerCase();
+            document.getElementById('search-input-pc').value = val;
+            document.getElementById('search-input-mobile').value = val;
+
+            const activeSection = document.querySelector('.page-section.active');
+            if (searchQuery !== '' && activeSection && activeSection.id !== 'view-catalog') {
+                navigateTo('catalog');
+            }
+            filterCatalogUI();
+        }
+
+        function filterCategoryMobile(cat) {
+            filterCategory(cat);
+            document.querySelectorAll('.drawer-menu li').forEach(li => li.classList.remove('active'));
+            const mobileLi = document.getElementById(`m-cat-${cat}`);
+            if(mobileLi) mobileLi.classList.add('active');
+            toggleDrawer(false);
+            navigateTo('catalog');
+        }
+
+        function initStore() {
+            renderGrids();
+        }
+
+        function renderGrids() {
+            const techGrid = document.getElementById('home-tech-grid');
+            const advGrid = document.getElementById('home-adventure-grid');
+            const newGrid = document.getElementById('new-products-grid');
+
+            if(techGrid) techGrid.innerHTML = products.filter(p => p.category === 'Optical').map(p => generatePremiumCard(p)).join('');
+            if(advGrid) advGrid.innerHTML = products.filter(p => p.category === 'Sun').map(p => generatePremiumCard(p)).join('');
+            if(newGrid) newGrid.innerHTML = products.map(p => generatePremiumCard(p)).join('');
+            
+            filterCatalogUI();
+        }
+
+        function generatePremiumCard(p) {
+            const hasStock = p.stock > 0;
+            const stockClass = !hasStock ? 'stock-none' : (p.stock <= 2 ? 'stock-low' : 'stock-high');
+            const stockText = !hasStock ? 'Bajo Pedido Exclusivo' : (p.stock <= 2 ? `Piezas Limitadas` : `Disponible en Atelier`);
+
+            return `
+                <div class="premium-card">
+                    <span class="sku-tag">${p.sku}</span>
+                    ${p.badge ? `<span class="card-badge">${p.badge}</span>` : ''}
+                    <div class="premium-img-box" onclick="showProductDetail(${p.id})">
+                        <img src="${p.img}" alt="${p.name}">
+                    </div>
+                    <div class="premium-info">
+                        <span class="premium-brand-tag">${p.brand}</span>
+                        <h4 onclick="showProductDetail(${p.id})">${p.name}</h4>
+                        <div class="premium-prices">
+                            <span class="p-current">Bs. ${p.price.toFixed(2)}</span>
+                        </div>
+                        <span class="stock-tag ${stockClass}">${stockText}</span>
+                        
+                        <button class="btn-add-lux ${!hasStock ? 'btn-disabled' : ''}" ${!hasStock ? 'disabled' : ''} onclick="addToCart(${p.id}, 1)">
+                            ${hasStock ? 'Añadir a mi Selección' : 'Agotado'}
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function addToCart(productId, qty) {
+            const prod = products.find(p => p.id === productId);
+            if(!prod || prod.stock <= 0) return;
+
+            const existing = cart.find(item => item.id === productId);
+            if(existing) {
+                if(existing.qty + qty <= prod.stock) {
+                    existing.qty += qty;
+                } else {
+                    existing.qty = prod.stock;
+                }
+            } else {
+                cart.push({ id: productId, qty: qty });
+            }
+            
+            // Disparar celebración sofisticada de confetti dorado
+            confetti({
+                particleCount: 40,
+                spread: 60,
+                origin: { y: 0.85 },
+                colors: ['#d4af37', '#aa7c11', '#ffffff']
+            });
+
+            saveAndRefreshCart();
+        }
+
+        function changeCartQty(productId, change) {
+            const prod = products.find(p => p.id === productId);
+            const item = cart.find(item => item.id === productId);
+            if(!item || !prod) return;
+
+            item.qty += change;
+            if(item.qty <= 0) {
+                cart = cart.filter(i => i.id !== productId);
+            } else if (item.qty > prod.stock) {
+                item.qty = prod.stock;
+            }
+            saveAndRefreshCart();
+        }
+
+        function saveAndRefreshCart() {
+            localStorage.setItem('creactivo_luxury_cart', JSON.stringify(cart));
+            renderCartUI();
+        }
+
+        function renderCartUI() {
+            const countElem = document.getElementById('cart-count');
+            const container = document.getElementById('cart-items-container');
+            const totalLabel = document.getElementById('totalLabel');
+            
+            let totalItems = 0;
+            let totalPrice = 0;
+            let html = '';
+
+            cart.forEach(item => {
+                const p = products.find(prod => prod.id === item.id);
+                if(p) {
+                    totalItems += item.qty;
+                    totalPrice += p.price * item.qty;
+                    html += `
+                        <div class="cart-item">
+                            <img src="${p.img}">
+                            <div style="flex:1;">
+                                <h5 style="font-size:0.85rem; font-weight:500; margin-bottom:4px; color:var(--lux-black); line-height:1.2;">${p.name}</h5>
+                                <span style="font-size:0.8rem; color:#aa7c11; font-weight:600;">Bs. ${p.price.toFixed(2)}</span>
+                                <div class="qty-box" style="margin-top:8px; max-width:85px; margin-bottom:0; border-color:#e2e2e2; height:28px;">
+                                    <button class="qty-btn" style="padding:0; font-size:0.8rem;" onclick="changeCartQty(${p.id}, -1)">-</button>
+                                    <input type="text" class="qty-val" style="width:25px; font-size:0.75rem;" value="${item.qty}" readonly>
+                                    <button class="qty-btn" style="padding:0; font-size:0.8rem;" onclick="changeCartQty(${p.id}, 1)">+</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+
+            if(countElem) countElem.innerText = totalItems;
+            if(totalLabel) totalLabel.innerText = `Bs. ${totalPrice.toFixed(2)}`;
+            if(container) container.innerHTML = html || '<p style="text-align:center; color:var(--text-muted); padding:45px; font-size:0.8rem; letter-spacing:1px; font-weight:300;">Ningún armazón seleccionado en su vitrina.</p>';
+        }
+
+        function filterCategory(cat) {
+            currentCategory = cat;
+            document.querySelectorAll('.cat-list li').forEach(li => li.classList.remove('active'));
+            const activeLi = document.getElementById(`cat-${cat}`);
+            if(activeLi) activeLi.classList.add('active');
+            filterCatalogUI();
+        }
+
+        function filterBrand(brand) {
+            if(currentBrand === brand) {
+                currentBrand = 'all';
+                document.getElementById(`brand-${brand}`).classList.remove('active');
+            } else {
+                document.querySelectorAll('.brand-box').forEach(b => b.classList.remove('active'));
+                currentBrand = brand;
+                document.getElementById(`brand-${brand}`).classList.add('active');
+            }
+            filterCatalogUI();
+        }
+
+        function filterCatalogUI() {
+            const container = document.getElementById('catalog-products-grid');
+            const titleHeader = document.getElementById('catalog-results-title');
+            if(!container) return;
+
+            let filtered = products;
+
+            if(currentCategory !== 'all') {
+                filtered = filtered.filter(p => p.category === currentCategory);
+            }
+            if(currentBrand !== 'all') {
+                filtered = filtered.filter(p => p.brand === currentBrand);
+            }
+            if(searchQuery !== '') {
+                filtered = filtered.filter(p => 
+                    p.name.toLowerCase().includes(searchQuery) ||
+                    p.brand.toLowerCase().includes(searchQuery) ||
+                    p.sku.toLowerCase().includes(searchQuery)
+                );
+            }
+
+            if (searchQuery !== '') {
+                titleHeader.innerText = `Piezas halladas para: "${searchQuery}" (${filtered.length})`;
+            } else {
+                titleHeader.innerText = `Galería Completa Eyewear`;
+            }
+
+            container.innerHTML = filtered.map(p => generatePremiumCard(p)).join('') || 
+                '<div style="grid-column: 1/-1; text-align:center; padding:60px; color:var(--text-muted); font-size:0.85rem; font-weight:300;"><i class="fas fa-search" style="font-size:1.4rem; margin-bottom:14px; display:block; color:#ddd;"></i>No se han hallado monturas con los criterios seleccionados.</div>';
+        }
+
+        function showProductDetail(id) {
+            const p = products.find(prod => prod.id === id);
+            if(!p) return;
+
+            document.getElementById('det-img').src = p.img;
+            document.getElementById('det-crumbs').innerText = `Atelier / Eyewear / ${p.sku}`;
+            document.getElementById('det-brand-badge').innerText = p.brand;
+            document.getElementById('det-name').innerText = p.name;
+            document.getElementById('det-desc-top').innerText = p.desc;
+            
+            document.getElementById('det-bullet-list').innerHTML = p.bullets.map(b => `<li>${b}</li>`).join('');
+            
+            let tableHtml = '';
+            for(let key in p.specs) {
+                tableHtml += `<tr><td class="label-td">${key}</td><td class="value-td">${p.specs[key]}</td></tr>`;
+            }
+            document.getElementById('det-tech-table').innerHTML = tableHtml;
+
+            const hasStock = p.stock > 0;
+            document.getElementById('detail-action-box').innerHTML = `
+                <div class="qty-box">
+                    <button class="qty-btn" onclick="changeDetailQty(-1)">-</button>
+                    <input type="number" class="qty-val" id="qty-detail" value="1" min="1" max="${p.stock}" readonly>
+                    <button class="qty-btn" onclick="changeDetailQty(1)">+</button>
+                </div>
+                <button class="btn-add-lux ${!hasStock ? 'btn-disabled' : ''}" style="max-width:280px;" ${!hasStock ? 'disabled' : ''} onclick="addFromDetail(${p.id})">
+                    ${hasStock ? 'Añadir a mi Selección' : 'Bajo Reserva'}
+                </button>
+            `;
+
+            document.getElementById('det-wa-btn').onclick = function() {
+                const text = encodeURIComponent(`Hola Creactivo Atelier, poseo mi receta oftálmica y deseo consultar la viabilidad de montaje técnico en el armazón: ${p.name} (SKU: ${p.sku})`);
+                window.open(`https://wa.me/59175179990?text=${text}`, '_blank');
+            };
+
+            navigateTo('detail');
+        }
+
+        function changeDetailQty(change) {
+            const input = document.getElementById('qty-detail');
+            if(!input) return;
+            let val = parseInt(input.value) + change;
+            const max = parseInt(input.getAttribute('max'));
+            if(val >= 1 && val <= max) input.value = val;
+        }
+
+        function addFromDetail(id) {
+            const input = document.getElementById('qty-detail');
+            const qty = input ? parseInt(input.value) : 1;
+            addToCart(id, qty);
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
+            document.getElementById(`btn-${tabId}`).classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        function sendWhatsAppOrder() {
+            if(cart.length === 0) return alert('La lista de selección se encuentra vacía.');
+            
+            let message = "*SOLICITUD DE REVISIÓN - CREACTIVO ATELIER EYEWEAR*\n\n";
+            let total = 0;
+
+            cart.forEach((item, idx) => {
+                const p = products.find(prod => prod.id === item.id);
+                if(p) {
+                    const sub = p.price * item.qty;
+                    total += sub;
+                    message += `${idx + 1}. *${p.name}*\n`;
+                    message += `   Métricas: ${p.sku} | Cantidad: ${item.qty} u. | Base Armazón: Bs. ${sub.toFixed(2)}\n\n`;
+                }
+            });
+
+            message += `*TOTAL ESTIMADO MONTURA: Bs. ${total.toFixed(2)}*\n\n`;
+            message += `_Procederé a adjuntar la imagen de mi receta oftálmica para que el especialista calcule el laboratorio de cristales pertinente (Anti-Reflejo, Blue Block o Progresivo HD)._`;
+
+            const cleanNumber = "59175179990"; // WhatsApp Central de Bolivia asignado
+            window.open(`https://wa.me/${cleanNumber}?text=${encodeURIComponent(message)}`, '_blank');
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            initStore();
+            renderCartUI();
+        });
+    </script>
+</body>
+</html>
